@@ -6,8 +6,8 @@ const router = express.Router();
 const controller = new (require('./controller').OrderController)();
 
 router.get(
-  '/begin/:first&second',
-   (req: Request, res: Response) => {
+  '/begin/:first/:second',
+   async(req: Request, res: Response) => {
     try {
       const firstDate: string = req.params.first;
       const secondDate: string = req.params.second;
@@ -15,8 +15,10 @@ router.get(
       console.log("this is firsr", firstDate, secondDate);
       
 
-      const result = controller.getReport(firstDate, secondDate)
-      return res.status(200).send(result)
+      const result = await controller.getReport(firstDate, secondDate);
+      console.log(result);
+      
+      return res.send({takings: result})
     } catch (error) {
       return res.status(500).send({
         success: false,
@@ -28,12 +30,10 @@ router.get(
   })
 
 .get(
-  '/orders', 
-   (req: Request, res: Response) => {
-    console.log('Зашед сюда');
-    
+  '/', 
+   async (req: Request, res: Response) => {
     try {
-      const result = controller.getAllOrders();
+      const result = await controller.getAllOrders();
       return res.status(200).send(result);
     } catch (error) {
       return res.status(500).send({
